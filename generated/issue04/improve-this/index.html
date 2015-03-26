@@ -13,6 +13,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link href="../../stylesheets/screen.css" media="all" rel="stylesheet" type="text/css" />
 	<script src="http://modernizr.com/downloads/modernizr-2.5.3.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="../../assets/js/keymaster.min.js"></script>
 
 	<title>Magazine | Improve This</title>
@@ -38,11 +39,11 @@
 
 	<nav class="paginate">
 		
-			<a id="prev" class="prev" href="../../issue04/index/">◀</a>
+			<a id="prev" class="prev" href="../../issue04/rounded-bias/">◀</a>
 		
 
 		
-			<a id="next" class="next" href="../../issue04/index/">▶</a>
+			<a id="next" class="next" href="../../issue04/puzzle/">▶</a>
 		
 		<script>
 		key('left', function() {
@@ -59,7 +60,7 @@
 			<nav class="issues">
 				<ul class="clearfix">
 					<li class="active"><a href="">Issue 4, October 2013</a></li>
-					<li class="pull-right">Page null / 9</li>
+					<li class="pull-right">Page 7 / 9</li>
 				</ul>
 			</nav>
 
@@ -78,7 +79,7 @@
 					
 				</header>
 				<div class="article-body">
-					<p>In improve this we take a look at a reader submitted test, user interface, story or block of code and we try and improve it, without context, explaining what we did as we went.</p><p>In this issue, Mike sent a link to an <a href="https://github.com/gardym/spacecubed-projectrjs/blob/master/lib/streamers/twitter_stream_source.js">event source to a realtime social media visualization</a>.</p><p>Before we ever apply brainpower, let’s apply computer power. JSLint and JSHint are both tools to find mistakes and oversights.</p><p><script src="https://gist.github.com/gardym/721358c7f65836737415.js"></script></p><p>The implied globals are all OK. The unused variables are not. We see immediately that:</p><ol><li>The <span class="inline-code"><code>mongo</code></span> dependency isn’t used</li><li>There is no error handling around inserting records into the database.</li></ol><p>The first problem is easily solved. The second problem we’ll report and ignore, because it appears throughout the rest of the program:</p><p><script src="https://gist.github.com/gardym/7866987a3e0dfe1cae22.js"></script></p><p>Let’s apply brainpower. Three things stand out:</p><ol><li><span class="inline-code"><code>map_tweet_to_event</code></span> seems to have an unnecessary callback. This should be an easy fix.</li><li><span class="inline-code"><code>tweet.coordinates</code></span> is both null-checked and uses magic numbers. This isn’t a problem; but, data structures with optional nulls are easy to trip on in normal use and complicate testing.</li><li><span class="inline-code"><code>start_streaming</code></span> is a set of deeply nested callbacks. This one is four levels deep. Not a serious offence by Javascript standards; but, we can do better.</li></ol><p>Sadly, this code came with no tests. We write a characterization test to give confidence that we won’t break anything. The bottom of nested callbacks are good places to find expected behaviors:</p><p><script src="https://gist.github.com/gardym/65dfdfd385020f6b8a0d.js"></script></p><p>We flesh out the test guided by the test failures.</p><p>Now, we can refactor with (more) confidence:</p><p>First, we collapse the <span class="inline-code"><code>map_tweet_to_event</code></span> callback.</p><p><script src="https://gist.github.com/gardym/14adb21c2f800ec16908.js"></script></p><p>Second, we split up <span class="inline-code"><code>start_streaming</code></span> up by responsibility. Those responsibilities— right now— are:</p><ol><li>Streaming tweets.</li><li>Logging.</li><li>Filtering tweets.</li><li>Saving raw tweets.</li><li>Saving events (processed tweets).</li></ol><p>1 through 3 involve the Twitter stream. 4 and 5 involve the database.</p><p>We create a <span class="inline-code"><code>stream_tweets</code></span> function:“ ,</p><p><script src="https://gist.github.com/gardym/ff2d4371a7b429e00de1.js"></script></p><p>Notice we inline the <span class="inline-code"><code>params</code></span> object that was previously initialized in <span class="inline-code"><code>track_current_user</code></span> because it is only used by the <span class="inline-code"><code>Twitter.stream</code></span> method.</p><p>Then, we create a <span class="inline-code"><code>record_tweet</code></span> function:</p><p><script src="https://gist.github.com/gardym/e4c1d8372458c10795c9.js"></script></p><p>This function returns the callback function, but keeps the <span class="inline-code"><code>db</code></span> in scope. Finally, we update <span class="inline-code"><code>track_current_user:</code></span></p><p><script src="https://gist.github.com/gardym/b9a1a696c09805bbcd01.js"></script></p><p>The tests pass! That means it works, right? ;–)</p><p><em>Do you have something you want improved? Send it to </em><a href="mailto:p2@thoughtworks.com"><em>p2@thoughtworks.com</em></a><em>.</em></p>
+					<p><em>In improve this we take a look at a reader submitted test, user interface, story or block of code and we try and improve it, without context, explaining what we did as we went.</em></p><p>In this issue we have with two tiny partials of code. It’s some ASPX/HTML madness</p><p><script src="https://gist.github.com/distributedlife/6411769.js"></script></p><p>The first thing we should do is try and remove the conditional logic and the editable properties out. This behaviour should be in the controller. The controller logic should be ‘If the user has insufficient privileges to edit but can see the record’, redirect the user to the view-only resource.</p><p><script src="https://gist.github.com/distributedlife/6411783.js"></script></p><p>The goal of the conditional <span class="inline-code"><code>(isCurrentUser || isAdminUser)</code></span> is to not show the personal email address unless a user is looking at their own account or an admin is looking. There are couple of ways we can handle this.</p><h2>Keep the view logic.</h2><p>If you want to keep the view logic, then the next step would be to collapse the conditional down to one branch.</p><p><script src="https://gist.github.com/distributedlife/6411798.js"></script></p><p>The personalEmailIsVisible property is set on the controller.</p><p><script src="https://gist.github.com/distributedlife/6411809.js"></script></p><p>With fewer code paths our testing becomes simpler.</p><h2>Remove the view logic and mask the property</h2><p>Here change the view to always render the personal email address:</p><p><script src="https://gist.github.com/distributedlife/6411817.js"></script></p><p>What we do in the controller is mask the value for users who should not see that data.</p><p><script src="https://gist.github.com/distributedlife/6411821.js"></script></p><h2>Remove the view logic and make a new domain object</h2><p>I would trend towards making new domain objects as the view fractures with conditionals. Let’s call it a <span class="inline-code"><code>PublicPerson</code></span>. There is no personal email address on this model so the conditional logic is no longer required. I would use an adapter to turn the <span class="inline-code"><code>PrivatePerson</code></span> object into a <span class="inline-code"><code>PublicPerson</code></span>. The challenge with object oriented programming is more logic you have, the muddier your domain model becomes.</p><p>Here is our view and controller</p><p><script src="https://gist.github.com/distributedlife/6411828.js"></script></p><h2>Minor Model Changes and some CSS</h2><p>I would rename the model from Model to something that was more meaningful like <span class="inline-code"><code>Person</code></span>. This changes <span class="inline-code"><code>Model.StreetAddress</code></span> to <span class="inline-code"><code>Person.HomeAddress</code></span>. It’s a bit mixed in places as there is <span class="inline-code"><code>HomeAddress.StreetAddress</code></span>, <span class="inline-code"><code>StreetAddress</code></span>, <span class="inline-code"><code>Model.StreetAddress</code></span>. As there is only one line for the street and there appears to be only one address (home) all this relates to a person. so <span class="inline-code"><code>Person.HomeAddress</code></span> is a good name.</p><p>I’d also make the <span class="inline-code"><code>AlternateEmail</code></span> and <span class="inline-code"><code>PersonalEmail</code></span> consistent. It should be one or the other, using both terms makes it feel like the domain model is not fully understood. I’d also remove the cols and rows properties and move them into CSS as height and width. The span elements in the second paragraph are probably there for formatting. Remove them and style them using CSS.</p><p><script src="https://gist.github.com/distributedlife/6411842.js"></script></p><h2>The Sucker Punch</h2><p>The final improvement is easy to miss and by the longest margin: the most important. It’s the reason why this code snippet was put up for review. Neither the address or the email address have had the values encoded. This meant that arbitrary javascript was inserted into the fields and executed as the page is rendered. The fix is quite simple.</p><p><script src="https://gist.github.com/distributedlife/6411852.js"></script></p><p><em>Do you have something you want improved? Send it to </em><a href="mailto:p2@thoughtworks.com"><em>p2@thoughtworks.com</em></a><em>.</em></p>
 				</div>
 
 				<aside class="left-column clearfix">
@@ -103,11 +104,11 @@
 	<div id="bottom-pages">
 		<nav class="paginate">
 			
-				<a class="prev" href="../../issue04/index/">◀</a>
+				<a class="prev" href="../../issue04/rounded-bias/">◀</a>
 			
 
 			
-				<a class="next" href="../../issue04/index/">▶</a>
+				<a class="next" href="../../issue04/puzzle/">▶</a>
 			
 		</nav>
 	</div>
