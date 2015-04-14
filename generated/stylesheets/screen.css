@@ -343,10 +343,6 @@ body bi {
     padding-left: 10px
 }
 
-.table-of-contents a {
-    text-decoration: none
-}
-
 .table-of-contents a:hover {
     text-decoration: underline
 }
