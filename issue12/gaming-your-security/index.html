@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link href="../../stylesheets/screen.css" media="all" rel="stylesheet" type="text/css" />
+	<script src="http://modernizr.com/downloads/modernizr-2.5.3.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="../../assets/js/keymaster.min.js"></script>
+
+	<title>P2 Magazine | Gaming Your Security Part 1: Threat Modelling</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:url" content="http://localhost:8282/issue12/gaming-your-security/" />
+
+	<meta name="prismic-routing-pattern" content="/issue$issueNum/$slug">
+    <meta name="prismic-routing-param" content="slug">
+    <meta name="prismic-routing-param" content="issueNum">
+</head>
+
+<body class="wrapper">
+	<!-- Google Tag Manager -->
+	<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P97X8B"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-P97X8B');</script>
+	<!-- End Google Tag Manager -->
+
+	<nav class="paginate">
+		
+			<a id="prev" class="prev" href="../../issue12/iot/">◀</a>
+		
+
+		
+			<a id="next" class="next" href="../../issue12/remove-in-qa/">▶</a>
+		
+		<script>
+		key('left', function() {
+			window.open($("#prev")[0].href, '_self', false);
+		});
+		key('right', function(){
+			window.open($("#next")[0].href, '_self', false);
+        });
+		</script>
+	</nav>
+
+	<div class="container">
+		<section class="page">
+			<nav class="issues">
+				<ul class="clearfix">
+					<li class="active"><a href="">Issue 12, October 2015</a></li>
+					<li class="pull-right">Page 2 / 8</li>
+				</ul>
+			</nav>
+
+			<article>
+				<header>
+					<h1>Gaming Your Security Part 1: Threat Modelling</h1>
+					
+
+					
+						<p class="byline">
+							Works and Music by
+							
+								
+							Rosalie Tolentino
+						</p>
+					
+				</header>
+				<div class="article-body">
+					<p><em>You enter the world beautifully new--wooden club and shield combo. Your stats are relatively even. You look around at a vast plain that embodies the beginning of your journey to become the most powerful warrior that this server has ever seen.</em></p><p><em>And then the bears attack.</em></p><p><em>You kill the first couple, but more continue to appear. Two becomes four, four becomes eight and the waves increase at a heart-ratcheting pace. Working towards exhaustion, you spot a bottle of healing wine nearby and down it for a little support. Unfortunately the bears don't stop. After 90 seconds of key-beating survival, the dead bears around you suddenly revive and pull out AK-47s to obliterate your existence.</em></p><p><em>At this point you either throw up your keyboard in disgust or you play again and realize that the healing wine gives your character a power level variable that can be manipulated from 20 to 100, making you invincible to the bear shenanigans. With the hacked wine powerup, 2 minutes fly by and a chest appears! It reveals a flag and maybe a treasure for you, and then the challenge is over. Congratulations.</em></p><p>The above scenario is an abridged, dramatized rendition of the Massively Multiplayer Online Role-Playing Game (MMORPG) Pwn Adventure. For players of <strong>Pwn Adventure</strong>, hacking is the game. "The concept of Pwn Adventure is to look at the common security flaws that games have and make a challenge out of those flaws," says co-creator and former Raytheon security researcher, Wiens Wagner (Wired 2015). </p><h3>Why Security Games?</h3><p>I've played a number of security games from the very high level CTRL-ALT-HACK to jeopardy-style capture the flag to tricks with Elevation of Privilege to implementing precise NOP sleds in shellcode with Overthewire.  With the plethora of existing security games out there, it’s difficult to know which will be fun and productive for you to explore. To that end, let’s distinguish two types of security games based on their relevance to everyday work in software. </p><blockquote><p>“"Even if I couldn’t get the credit card number, I started thinking about other ways to try and mess with the customer’s order items... “</p></blockquote><p>The first are trick-based card games designed specifically to mitigate software vulnerabilities by scaling security threat knowledge across large delivery organizations. They’re called Elevation of Privilege and OWASP's Cornucopia. Jack Singleton and I have played them with different project teams, and one client architect said, "Even if I couldn’t get the credit card number, I started thinking about other ways to try and mess with the customer’s order items... Wow, this game really made me think about all the different things someone could try to do." I’ve seen both card decks successfully challenge development teams to think about security in healthier ways. </p><p>The second type of games fall under general security puzzles. They are less directly about vulnerabilities on your project and more about forcing software to do things it was never meant to do and exploit misconfigured or misused cryptographic systems. These games seriously challenge your knowledge of the software you use on daily basis, and when they aren’t perplexing, they’re a pleasant surprise. </p><p>Let’s explore these two types of games in depth. </p><h4>Threat Modeling Games</h4><p><strong>Elevation of Privilege (EoP)</strong> is designed by Adam Shostack and used at Microsoft to help scale the ability to threat model, which normally requires a heavy amount of security expertise, to development teams by teaching them how to apply the different types of threats to their project. Threats can be categorized into many types. A good mnemonic for them is STRIDE, which stands for spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege. EoP designates one card suite per type of threat and in order to win more points in the game, you have to demonstrate how the threat card in your hand applies to your software. For example, the 3 of Tampering card says "An attacker can take advantage of your custom key exchange or integrity control which you built instead of using standard crypto." If you find an instance in your software where there is custom cryptography, then you win a point, and then the team notes down the threat to be prioritized and addressed that afterwards. </p><p><strong>OWASP's Cornucopia</strong> game dynamics work the same way except, instead of basing the suites on STRIDE, Cornucopia is more focused on web application security and uses the following threat themes: data validation &amp; encoding, authentication, session management, authorization, cryptography, and “cornucopia.” The last suite, named after the game itself, is a grab bag of different types of attacks which range from compiling with vulnerable, out-of-date tools to repudiation.</p><p>Both EoP and Cornucopia have been very effective at challenging the development teams I've played with. Players start applying attacks they hadn't thought about before by asking questions like "How would I apply client-side denial of service on my system?" EoP also gives players the opportunity to invent their own attack with the ace card under each of the categories. We played with Vinod Santhanam who invented the "Spoof a ThoughtWorker" Attack and won points for that. EoP can be frustrating if it's hard to interpret how the cards apply to your system. For example, one card says "An attacker can provide a pointer across a trust boundary, rather than data which can be validated." The worry is that even if you’re not sure how to apply an attack yourself to your software, that doesn't mean it isn't possible. At the same time, awareness is a good start, and these card games have certainly helped in that regard. </p><blockquote><p>“These games are not meant to prioritize threats but to shift developer team thinking from building software to identifying possible risks.”</p></blockquote><p>EoP and Cornucopia are amazing games at forcing people to think about their software differently. They've helped start conversations like whether a particular bit of security logic is part of the domain and should not be centralized or how the team should address situations where the perimeter has been compromised. In that case, hopefully their application has another layer of defense to handle that. In addition, we have had players note that they will follow up with another team afterwards because the threats they found fall outside their direct authority. After playing these games, I’ve seen security discussions become more cross-functional and holistically cross-team, which is healthy.</p><p>On the other hand, it’s important to be clear with participants that the EoP and Cornucopia games are not meant to prioritize threats but to shift developer team thinking from building software to identifying possible risks. The games can also feel intense when players disagree over ambiguity, so it's important to say that the activity is meant to help identify what is possible. The team can follow up with another tool like a risk matrix to help measure the impact and likelihood of the threats found. </p><p>I highly recommend trying at least Cornucopia on your project. Elevation of Privilege has a broader scope, and the larger context can make it harder to jump into. If you're feeling more adventurous, try EoP, which is currently my favorite between the two. Both are easily searchable and available under the Creative Commons License. In the next issue I’ll delve into how to get started with other security games.</p><h4>Sources</h4><p>Wired. “<a href="https://www.wired.com/2015/04/multiplayer-hack-to-win">You have to Hack this Massively Multiplayer Game to Beat It</a>”   (April 2015)</p><p>OWASP. <a href="https://www.owasp.org/index.php/OWASP_Cornucopia">“OWASP Cornucopia”</a>  (June 2015)</p><p>Microsoft. <a href="http://www.microsoft.com/en-us/sdl/adopt/eop.aspx">“Elevation of Privilege (EOP) Card Game”</a>   (2015)</p><p>University of Washington. <a href="http://www.controlalthack.com/">“CTRL-ALT-HACK”</a>  (2012)<br></p>
+				</div>
+
+				<aside class="left-column clearfix">
+					<div class="author">
+
+                    
+                        
+                        
+                        <div>
+                            <a href="#">
+                                <img class="author-avatar" src="https://prismic-io.s3.amazonaws.com/p2-magazine/26ba3341e87c17be711ed0ae623461f48572297f_rosalie.jpg" />
+                            </a>
+                            <div>Rosalie Tolentino</div>
+                            
+                        </div>
+                    
+				</aside>
+			</article>
+		</section>
+	</div>
+
+	<div id="bottom-pages">
+		<nav class="paginate">
+			
+				<a class="prev" href="../../issue12/iot/">◀</a>
+			
+
+			
+				<a class="next" href="../../issue12/remove-in-qa/">▶</a>
+			
+		</nav>
+	</div>
+<script>window.routerInfosForFile = {"src":"/article.html","dst":"/issue12/gaming-your-security/index.html","args":{"issueNum":"12","slug":"gaming-your-security"}};</script>
+</body>
+</html>
